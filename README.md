@@ -33,15 +33,18 @@
 
 - Python 3.8+
 - `pure-python-adb`
-- `scrcpy` (colocado en `./scrcpy/` para Windows o Linux)
+- `scrcpy` (colocado en `./scrcpy/` para Windows o Linux) MUY IMPORTANTE
 - Sistema operativo con soporte para consola (`cmd`, `bash`, etc.)
 - Dispositivo Android con depuración USB activada
 
 Instalación de dependencias:
-
 ```bash
 pip install pure-python-adb
 ```
+
+
+En windows
+    pip install windows-curses
 
 ## 🚀 Uso
 
@@ -76,7 +79,6 @@ ADBuster/
 
 - Algunas funciones como el explorador de archivos o terminal requieren módulos auxiliares.
 - Para conexión Wi-Fi, asegúrate de que el dispositivo esté en la misma red que el host y habilitado en modo TCP/IP ADB.
-- El programa detecta automáticamente si se está ejecutando en Windows o Linux para lanzar `scrcpy`.
 
 ## 📜 Licencia
 

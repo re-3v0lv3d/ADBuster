@@ -429,7 +429,8 @@ def seleccionar_dispositivo(language, texts):
 
 def abrir_scrcpy(dispositivo, language, texts):
     base_path = os.path.dirname(os.path.abspath(__file__))
-    ruta_scrcpy = os.path.join(base_path, "scrcpy", "scrcpy.exe", "scrcpy") # Soporte Linux is coming xD
+    ruta_scrcpy = os.path.join(base_path, "scrcpy", "scrcpy.exe")
+    ruta_scrcpylin = os.path.join(base_path, "scrcpy", "scrcpy") # Soporte Linux is coming xD
 
     if not os.path.exists(ruta_scrcpy):
         print(texts[language]["scrcpy_not_found"])
@@ -712,6 +713,7 @@ def cli_adb(language, texts):
             if target_device:
                 try:
                     abrir_scrcpy(target_device, language, texts)
+                    abrir_scrcpy_linux(target_device, language, texts)
                 except Exception as e:
                     print(f"[!] Failed to run scrcpy for Windows: {e}")
                     print("[*] Attempting to use Linux method...")

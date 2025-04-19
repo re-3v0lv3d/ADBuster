@@ -35,6 +35,7 @@ For Readme in English: https://github.com/re-3v0lv3d/ADBuster/blob/main/Readme-E
 
 ## 📦 Requisitos
 
+- ADB Instalado
 - Python 3.8+
 - `pure-python-adb`
 - `scrcpy` (colocado en `./scrcpy/` para Windows o Linux) MUY IMPORTANTE

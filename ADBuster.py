@@ -5,15 +5,37 @@ from ppadb.client import Client as AdbClient
 from tkinter import Tk
 from tkinter import filedialog
 import curses
+
+# Intentar importar módulos con depuración detallada
+file_explorer_main = None
+terminal_main = None
+adb_sideload_main = None
+
 try:
     from scripts.adb_file_explorer import main as file_explorer_main
-    from scripts.terminal import main as terminal_main
-    from scripts.adb_sideload import main as adb_sideload_main
-except ImportError:
-    print("[!] Warning: adb_file_explorer.py not found. File explorer functionality will be disabled.")
-    file_explorer_main = None 
-    adb_sideload_main = None  # Añadido para manejar la falta del módulo de sideload
+    print("[+] Módulo adb_file_explorer importado correctamente.")
+except ImportError as e:
+    print(f"[!] Error importando adb_file_explorer: {e}")
+except Exception as e:
+    print(f"[!] Error inesperado al importar adb_file_explorer: {e}")
 
+try:
+    from scripts.terminal import main as terminal_main
+    print("[+] Módulo terminal importado correctamente.")
+except ImportError as e:
+    print(f"[!] Error importando terminal: {e}")
+except Exception as e:
+    print(f"[!] Error inesperado al importar terminal: {e}")
+
+try:
+    from scripts.adb_sideload import main as adb_sideload_main
+    print("[+] Módulo adb_sideload importado correctamente.")
+except ImportError as e:
+    print(f"[!] Error importando adb_sideload: {e}")
+except Exception as e:
+    print(f"[!] Error inesperado al importar adb_sideload: {e}")
+
+# Diccionario de textos
 TEXTS = {
     "es": {
         # Language Selection
@@ -24,7 +46,7 @@ TEXTS = {
         "invalid_language": "¡Opción no válida! Inténtelo de nuevo.",
         # General
         "error_unexpected": "[-] Error inesperado: {error}",
-        "interrupted_keyboard": "\n[-] Interrup Blas por teclado. Saliendo...",
+        "interrupted_keyboard": "\n[-] Interrumpido por teclado. Saliendo...",
         "press_enter_continue": "Presione Enter para continuar...",
         "invalid_option": "[-] Opción no válida. Intente de nuevo.",
         "exiting": "Saliendo...",
@@ -89,12 +111,16 @@ TEXTS = {
         "opening_file_explorer": "[*] Abriendo administrador de archivos... ¡Prepárate para explorar!",
         "file_explorer_closed": "[+] Administrador de archivos cerrado.",
         "file_explorer_error": "[-] Error al abrir el administrador de archivos: {error}",
-        # Sideload Translations (Añadidas)
         "starting_sideload": "[*] Iniciando modo sideload...",
         "sideload_closed": "[+] Modo sideload cerrado.",
         "sideload_error": "[-] Error en el modo sideload: {error}",
         "no_active_device_sideload": "[*] No hay dispositivo activo. Por favor, selecciona uno para sideload.",
         "sideload_module_error": "[!] El módulo de sideload no se cargó correctamente.",
+        "opening_fastboot_partitions": "[*] Abriendo explorador de particiones Fastboot...",
+        "fastboot_partitions_closed": "[+] Explorador de particiones Fastboot cerrado.",
+        "fastboot_partitions_error": "[-] Error al abrir explorador de particiones: {error}",
+        "no_active_device_fastboot": "[*] No hay dispositivo activo. Por favor, selecciona uno para Fastboot.",
+        "fastboot_module_error": "[!] El módulo de particiones Fastboot no se cargó correctamente.",
         # Menus
         "separator_line": "===================================",
         "main_menu_title": "        ADBuster - Menú",
@@ -197,12 +223,16 @@ TEXTS = {
         "opening_file_explorer": "[*] Opening file explorer... Get ready to explore!",
         "file_explorer_closed": "[+] File explorer closed.",
         "file_explorer_error": "[-] Error opening file explorer: {error}",
-        # Sideload Translations (Añadidas)
         "starting_sideload": "[*] Starting sideload mode...",
         "sideload_closed": "[+] Sideload mode closed.",
         "sideload_error": "[-] Error in sideload mode: {error}",
         "no_active_device_sideload": "[*] No active device. Please select one for sideload.",
         "sideload_module_error": "[!] Sideload module not loaded correctly.",
+        "opening_fastboot_partitions": "[*] Opening Fastboot partitions explorer...",
+        "fastboot_partitions_closed": "[+] Fastboot partitions explorer closed.",
+        "fastboot_partitions_error": "[-] Error opening partitions explorer: {error}",
+        "no_active_device_fastboot": "[*] No active device. Please select one for Fastboot.",
+        "fastboot_module_error": "[!] Fastboot partitions module not loaded correctly.",
         # Menus
         "separator_line": "===================================",
         "main_menu_title": "        ADBuster - Menu",
@@ -220,12 +250,12 @@ TEXTS = {
         "menu_12_connect_ip": "12. Connect via IP",
         "menu_13_file_explorer": "13. Open file manager",
         "menu_14_sideload": "14. Adb Sideload",
-        "menu_15_exit": "15. Exit",
+        "menu_15_exit": "16. Exit",
         "select_option_prompt": "Select an option: ",
         "submenu_reboot_separator": "-----------------------------------",
         "submenu_reboot_title": "       Reboot Submenu",
         "submenu_reboot_1_normal": "1. Reboot",
-        "submenu_reboot_2_recovery": "2. Reboot to Recovery",
+        "submenu_reboot_2_recovery": "2. Re Techniques to Recovery",
         "submenu_reboot_3_fastboot": "3. Reboot to Fastboot",
         "submenu_reboot_4_edl": "4. Reboot to EDL",
         "submenu_reboot_5_back": "5. Back to main menu",
@@ -551,7 +581,7 @@ def mostrar_menu(language, texts):
     print(texts[language]["menu_12_connect_ip"])
     if file_explorer_main:
         print(texts[language]["menu_13_file_explorer"])
-    if adb_sideload_main:  # Añadido para mostrar la opción solo si el módulo está disponible
+    if adb_sideload_main:
         print(texts[language]["menu_14_sideload"])
     print(texts[language]["menu_15_exit"])
     print(texts[language]["separator_line"])
@@ -787,7 +817,7 @@ def cli_adb(language, texts):
                  print(texts[language]["no_device_selected"])
                  time.sleep(3)
 
-        elif opcion == "14" and adb_sideload_main:  # ADB sideload (Corregido)
+        elif opcion == "14" and adb_sideload_main:  # ADB sideload
             target_device = dispositivo_activo
             if not target_device:
                 print(texts[language]["no_active_device_sideload"])
@@ -811,7 +841,9 @@ def cli_adb(language, texts):
                 print(texts[language]["no_device_selected"])
                 time.sleep(3)
 
-        elif opcion == "15": # Salir
+
+
+        elif opcion == "15":  # Salir
             print(texts[language]["exiting"])
             time.sleep(1)
             limpiar_pantalla()

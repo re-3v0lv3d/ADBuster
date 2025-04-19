@@ -25,6 +25,7 @@
 
 ## 📦 Requirements
 
+- ADB Installed
 - Python 3.8+
 - `pure-python-adb`
 - `scrcpy` (placed in `./scrcpy/` for Windows or Linux) **VERY IMPORTANT**

@@ -28,6 +28,12 @@ For Readme in English: https://github.com/re-3v0lv3d/ADBuster/blob/main/Readme-E
 
 "Añadido soporte Adb sideload ;)"
 
+
+
+![Captura de pantalla 2025-04-19 195154](https://github.com/user-attachments/assets/428b0d3e-df36-4c35-9d51-f46651154605)
+
+
+
 ![Captura de pantalla 2025-04-19 154056](https://github.com/user-attachments/assets/e1d01d14-758b-4f97-9e78-45dec42e0cd2)
 
 

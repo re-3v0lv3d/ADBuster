@@ -46,9 +46,11 @@ Instalación de dependencias:
 pip install pure-python-adb
 ```
 
+(Solo windows)
 
-En windows
-    pip install windows-curses
+```bash
+pip install windows-curses
+```
 
 ## 🚀 Uso
 

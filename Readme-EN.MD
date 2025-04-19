@@ -2,7 +2,7 @@
 
 **ADBuster** is an interactive tool written in Python that facilitates advanced control and management of Android devices via ADB (Android Debug Bridge). Designed with a menu-style CLI interface, this utility is intended for both technical users and Android enthusiasts looking to automate common tasks and perform complex operations on devices connected via USB or Wi-Fi.
 
-
+"Added ADB Sideload support"
 
 ## ✨ Main Features
 

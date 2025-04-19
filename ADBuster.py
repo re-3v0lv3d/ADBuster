@@ -429,7 +429,7 @@ def seleccionar_dispositivo(language, texts):
 
 def abrir_scrcpy(dispositivo, language, texts):
     base_path = os.path.dirname(os.path.abspath(__file__))
-    ruta_scrcpy = os.path.join(base_path, "scrcpy", "scrcpy.exe") # Soporte Linux is coming xD
+    ruta_scrcpy = os.path.join(base_path, "scrcpy", "scrcpy.exe", "scrcpy") # Soporte Linux is coming xD
 
     if not os.path.exists(ruta_scrcpy):
         print(texts[language]["scrcpy_not_found"])

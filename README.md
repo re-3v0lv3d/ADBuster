@@ -1,5 +1,9 @@
 # ADBuster
 
+For Readme in English: https://github.com/re-3v0lv3d/ADBuster/blob/main/Readme-EN.MD
+
+
+
 **ADBuster** es una herramienta interactiva escrita en Python que facilita el control y gestión avanzada de dispositivos Android mediante ADB (Android Debug Bridge). Diseñada con una interfaz CLI estilo menú, esta utilidad está pensada tanto para usuarios técnicos como para entusiastas de Android que desean automatizar tareas comunes y realizar operaciones complejas sobre dispositivos conectados por USB o Wi-Fi.
 
 ![Captura de pantalla 2025-04-19 153956](https://github.com/user-attachments/assets/b3e00147-a14f-4d50-8022-684bc249bc00)

@@ -2,6 +2,8 @@
 
 **ADBuster** es una herramienta interactiva escrita en Python que facilita el control y gestión avanzada de dispositivos Android mediante ADB (Android Debug Bridge). Diseñada con una interfaz CLI estilo menú, esta utilidad está pensada tanto para usuarios técnicos como para entusiastas de Android que desean automatizar tareas comunes y realizar operaciones complejas sobre dispositivos conectados por USB o Wi-Fi.
 
+![Captura de pantalla 2025-04-19 153956](https://github.com/user-attachments/assets/b3e00147-a14f-4d50-8022-684bc249bc00)
+
 ## ✨ Características principales
 
 - 🖥 **Interfaz de Menú Interactiva**: Navegación intuitiva desde la terminal, con soporte bilingüe (Español/Inglés).
@@ -16,6 +18,17 @@
 - 📦 **Listado de Aplicaciones Instaladas**: Visualización de todos los paquetes de usuario instalados.
 - 🧠 **Extensibilidad Modular**: Soporte para scripts externos como `adb_file_explorer.py` o `terminal.py`.
 -      Soporte Inglés-Español.
+
+
+![Captura de pantalla 2025-04-19 154056](https://github.com/user-attachments/assets/e1d01d14-758b-4f97-9e78-45dec42e0cd2)
+
+
+
+![Captura de pantalla 2025-04-19 154146](https://github.com/user-attachments/assets/ec6ecdbd-f2f3-450b-9128-f2a4c8993b44)
+
+
+
+
 ## 📦 Requisitos
 
 - Python 3.8+
@@ -37,6 +50,12 @@ Ejecuta el script principal desde tu terminal:
 ```bash
 python ADBuster.py
 ```
+
+
+
+
+![Captura de pantalla 2025-04-19 154438](https://github.com/user-attachments/assets/cc8ef3d5-3b0c-4394-bf94-66d9648cd360)
+
 
 Selecciona el idioma, y navega por las distintas opciones del menú para interactuar con los dispositivos conectados.
 

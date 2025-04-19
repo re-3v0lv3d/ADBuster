@@ -8,9 +8,11 @@ import curses
 try:
     from scripts.adb_file_explorer import main as file_explorer_main
     from scripts.terminal import main as terminal_main
+    from scripts.adb_sideload import main as adb_sideload_main
 except ImportError:
     print("[!] Warning: adb_file_explorer.py not found. File explorer functionality will be disabled.")
     file_explorer_main = None 
+    adb_sideload_main = None  # Añadido para manejar la falta del módulo de sideload
 
 TEXTS = {
     "es": {
@@ -22,7 +24,7 @@ TEXTS = {
         "invalid_language": "¡Opción no válida! Inténtelo de nuevo.",
         # General
         "error_unexpected": "[-] Error inesperado: {error}",
-        "interrupted_keyboard": "\n[-] Interrupción por teclado. Saliendo...",
+        "interrupted_keyboard": "\n[-] Interrup Blas por teclado. Saliendo...",
         "press_enter_continue": "Presione Enter para continuar...",
         "invalid_option": "[-] Opción no válida. Intente de nuevo.",
         "exiting": "Saliendo...",
@@ -87,6 +89,12 @@ TEXTS = {
         "opening_file_explorer": "[*] Abriendo administrador de archivos... ¡Prepárate para explorar!",
         "file_explorer_closed": "[+] Administrador de archivos cerrado.",
         "file_explorer_error": "[-] Error al abrir el administrador de archivos: {error}",
+        # Sideload Translations (Añadidas)
+        "starting_sideload": "[*] Iniciando modo sideload...",
+        "sideload_closed": "[+] Modo sideload cerrado.",
+        "sideload_error": "[-] Error en el modo sideload: {error}",
+        "no_active_device_sideload": "[*] No hay dispositivo activo. Por favor, selecciona uno para sideload.",
+        "sideload_module_error": "[!] El módulo de sideload no se cargó correctamente.",
         # Menus
         "separator_line": "===================================",
         "main_menu_title": "        ADBuster - Menú",
@@ -103,15 +111,16 @@ TEXTS = {
         "menu_11_list_apps": "11. Listar aplicaciones instaladas",
         "menu_12_connect_ip": "12. Conectar por IP",
         "menu_13_file_explorer": "13. Abrir administrador de archivos",
-        "menu_14_exit": "14. Salir",
+        "menu_14_sideload": "14. Adb Sideload",
+        "menu_15_exit": "15. Salir",
         "submenu_reboot_separator": "-----------------------------------",
-        "select_option_prompt": "Seleccione una opción: ",
         "submenu_reboot_title": "       Submenú de Reinicio",
         "submenu_reboot_1_normal": "1. Reiniciar",
         "submenu_reboot_2_recovery": "2. Reiniciar a Recovery",
         "submenu_reboot_3_fastboot": "3. Reiniciar a Fastboot",
         "submenu_reboot_4_edl": "4. Reiniciar a EDL",
         "submenu_reboot_5_back": "5. Volver al menú principal",
+        "select_option_prompt": "Seleccione una opción: ",
         "select_reboot_option_prompt": "Seleccione una opción de reinicio: "
     },
     "en": {
@@ -155,8 +164,8 @@ TEXTS = {
         "connecting_ip_error": "[-] Error connecting via IP: {error}",
         "connect_ip_fail": "[-] Could not connect to the device with the provided IP.",
         "connected_to_ip": "[+] Connected to {serial}",
-         "using_wifi_device": "[*] Using connected Wi-Fi device.",
-       # Commands & Actions
+        "using_wifi_device": "[*] Using connected Wi-Fi device.",
+        # Commands & Actions
         "executing_command_error": "[-] Error executing command: {error}",
         "command_result": "[+] Result:\n{result}\n",
         "enter_command_prompt": "Enter the command to execute: ",
@@ -188,6 +197,12 @@ TEXTS = {
         "opening_file_explorer": "[*] Opening file explorer... Get ready to explore!",
         "file_explorer_closed": "[+] File explorer closed.",
         "file_explorer_error": "[-] Error opening file explorer: {error}",
+        # Sideload Translations (Añadidas)
+        "starting_sideload": "[*] Starting sideload mode...",
+        "sideload_closed": "[+] Sideload mode closed.",
+        "sideload_error": "[-] Error in sideload mode: {error}",
+        "no_active_device_sideload": "[*] No active device. Please select one for sideload.",
+        "sideload_module_error": "[!] Sideload module not loaded correctly.",
         # Menus
         "separator_line": "===================================",
         "main_menu_title": "        ADBuster - Menu",
@@ -204,7 +219,8 @@ TEXTS = {
         "menu_11_list_apps": "11. List installed applications",
         "menu_12_connect_ip": "12. Connect via IP",
         "menu_13_file_explorer": "13. Open file manager",
-        "menu_14_exit": "14. Exit",
+        "menu_14_sideload": "14. Adb Sideload",
+        "menu_15_exit": "15. Exit",
         "select_option_prompt": "Select an option: ",
         "submenu_reboot_separator": "-----------------------------------",
         "submenu_reboot_title": "       Reboot Submenu",
@@ -307,7 +323,6 @@ def conectar_con_ppadb():
     except RuntimeError as e:
          return []
 
-
 def ejecutar_comando_en_dispositivo(dispositivo, comando, language, texts):
     try:
         resultado = dispositivo.shell(comando)
@@ -373,12 +388,10 @@ def instalar_apk(dispositivo, language, texts):
     limpiar_pantalla()
 
 def obtener_dispositivos(language, texts):
-
     devices = conectar_con_ppadb()
     if not devices:
         pass
     return devices
-
 
 def seleccionar_dispositivo(language, texts):
     try:
@@ -538,7 +551,9 @@ def mostrar_menu(language, texts):
     print(texts[language]["menu_12_connect_ip"])
     if file_explorer_main:
         print(texts[language]["menu_13_file_explorer"])
-    print(texts[language]["menu_14_exit"])
+    if adb_sideload_main:  # Añadido para mostrar la opción solo si el módulo está disponible
+        print(texts[language]["menu_14_sideload"])
+    print(texts[language]["menu_15_exit"])
     print(texts[language]["separator_line"])
 
 def mostrar_submenu_reinicio(language, texts):
@@ -610,7 +625,6 @@ def cli_adb(language, texts):
                     print(texts[language]["invalid_option"])
                     time.sleep(2)
 
-
         elif opcion == "4": # Bypass USB/WIFI
             serial_usb = obtener_dispositivo_usb()
             if not serial_usb:
@@ -645,12 +659,10 @@ def cli_adb(language, texts):
                 print(texts[language]["connect_ip_fail"])
             time.sleep(3)
 
-
         elif opcion == "5": # Desconectar Wi-Fi
             desconectar_dispositivos_wifi(language, texts)
             if dispositivo_activo and ":" in dispositivo_activo.serial: 
                 dispositivo_activo = None
-
 
         elif opcion == "6": # Listar dispositivos
             dispositivos = obtener_dispositivos(language, texts)
@@ -681,7 +693,6 @@ def cli_adb(language, texts):
             time.sleep(1)
             input(texts[language]["press_enter_continue"])
 
-
         elif opcion == "7" and terminal_main:
             target_device = dispositivo_activo
             if not target_device:
@@ -689,7 +700,6 @@ def cli_adb(language, texts):
                  target_device = seleccionar_dispositivo(language, texts)
             if target_device:
                 terminal_main(target_device)
-
 
         elif opcion == "8": # Instalar APK
             target_device = dispositivo_activo
@@ -702,7 +712,6 @@ def cli_adb(language, texts):
             else:
                  print(texts[language]["no_device_selected"])
                  time.sleep(3)
-
 
         elif opcion == "9":  # Abrir scrcpy
             target_device = dispositivo_activo
@@ -725,9 +734,6 @@ def cli_adb(language, texts):
             else:
                 print(texts[language]["no_device_selected"])
                 time.sleep(3)
-
-
-
 
         elif opcion == "10": # Obtener info
             target_device = dispositivo_activo
@@ -758,7 +764,6 @@ def cli_adb(language, texts):
              if connected_device:
                  dispositivo_activo = connected_device
 
-
         elif opcion == "13" and file_explorer_main: # Abrir admin de archivos
             target_device = dispositivo_activo
             if not target_device:
@@ -782,7 +787,31 @@ def cli_adb(language, texts):
                  print(texts[language]["no_device_selected"])
                  time.sleep(3)
 
-        elif opcion == "14": # Salir
+        elif opcion == "14" and adb_sideload_main:  # ADB sideload (Corregido)
+            target_device = dispositivo_activo
+            if not target_device:
+                print(texts[language]["no_active_device_sideload"])
+                target_device = seleccionar_dispositivo(language, texts)
+
+            if target_device:
+                print(texts[language]["starting_sideload"])
+                time.sleep(1)  # Breve pausa para coherencia con el explorador de archivos
+                limpiar_pantalla()
+                try:
+                    adb_sideload_main(target_device)
+                    print(f"\n{texts[language]['sideload_closed']}")
+                except NameError:
+                    print(texts[language]["sideload_module_error"])
+                except Exception as e:
+                    import traceback
+                    print(f"\n{texts[language]['sideload_error'].format(error=e)}")
+                    traceback.print_exc()  # Imprime el traceback para depuración
+                time.sleep(3)
+            else:
+                print(texts[language]["no_device_selected"])
+                time.sleep(3)
+
+        elif opcion == "15": # Salir
             print(texts[language]["exiting"])
             time.sleep(1)
             limpiar_pantalla()
@@ -791,7 +820,6 @@ def cli_adb(language, texts):
         else:
             print(texts[language]["invalid_option"])
             time.sleep(2)
-
 
 # --- Entry Point ---
 if __name__ == "__main__":

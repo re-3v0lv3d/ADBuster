@@ -250,7 +250,7 @@ TEXTS = {
         "menu_12_connect_ip": "12. Connect via IP",
         "menu_13_file_explorer": "13. Open file manager",
         "menu_14_sideload": "14. Adb Sideload",
-        "menu_15_exit": "16. Exit",
+        "menu_15_exit": "15. Exit",
         "select_option_prompt": "Select an option: ",
         "submenu_reboot_separator": "-----------------------------------",
         "submenu_reboot_title": "       Reboot Submenu",
